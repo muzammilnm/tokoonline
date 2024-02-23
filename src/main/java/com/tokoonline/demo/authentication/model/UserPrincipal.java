@@ -2,9 +2,12 @@ package com.tokoonline.demo.authentication.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,18 +38,23 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    private UserPrincipal(UUID id, String firstName, String lastName, String username, String email, String password){
+    private UserPrincipal(UUID id, String firstName, String lastName, String username, String email, String password, Collection<? extends GrantedAuthority> authorities){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.authorities = Collections.emptyList();
+        this.authorities = authorities;
     }
 
     public static UserPrincipal build(ApplicationUser applicationUser){
-        return new UserPrincipal(applicationUser.getId(), applicationUser.getFirstName(), applicationUser.getLastName(), applicationUser.getUsername(), applicationUser.getEmail(), applicationUser.getPassword());
+        List<GrantedAuthority> authorities = applicationUser.getRoles().isEmpty() ? Collections.emptyList() : 
+            applicationUser.getRoles().stream()
+            .map(role -> new SimpleGrantedAuthority(role.getName()))
+            .collect(Collectors.toList());
+
+        return new UserPrincipal(applicationUser.getId(), applicationUser.getFirstName(), applicationUser.getLastName(), applicationUser.getUsername(), applicationUser.getEmail(), applicationUser.getPassword(), authorities);
     }
      
     @Override

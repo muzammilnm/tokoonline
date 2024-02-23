@@ -5,6 +5,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +54,7 @@ public class AuthenticationServiceTest {
             .lastName("Doe")
             .email("johndoe@gmail.com")
             .password("secret")
+            .roles(Collections.emptyList())
             .build();
         // Stub behavior for jwtProvider
         String jwtToken = "your_jwt_token_here";

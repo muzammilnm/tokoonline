@@ -1,5 +1,6 @@
 package com.tokoonline.demo.applicationuser;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class ApplicationUserServiceTest {
 
     @Test
     void loadUserByUsername_expectReturnUserPrincipal_whenUsernameIsFound(){
-        ApplicationUser existingApplicationUser = ApplicationUser.builder().username("john.doe").firstName("john").lastName("doe").email("johndoe@gmail.com").password("secret").build();
+        ApplicationUser existingApplicationUser = ApplicationUser.builder().username("john.doe").firstName("john").lastName("doe").email("johndoe@gmail.com").password("secret").roles(Collections.emptyList()).build();
         existingApplicationUser.setId(UUID.randomUUID());
         Mockito.when(applicationUserRepository.findByEmail(existingApplicationUser.getEmail())).thenReturn(Optional.of(existingApplicationUser));
 

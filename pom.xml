@@ -152,6 +152,7 @@
 				<configuration>
 					<excludes>
                         <exclude>**/DemoApplication.java</exclude>
+						<exclude>com/tokoonline/demo/Setup.*</exclude>
 						<exclude>**/**Application.class</exclude>
 						<exclude>**/authentication/model/**</exclude>
 						<exclude>**/authentication/jwt/**</exclude>

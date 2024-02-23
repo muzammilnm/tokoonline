@@ -27,7 +27,7 @@ public class ApplicationUserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         ApplicationUser applicationUser = applicationUserRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with " + email));
-        log.info("user found is name : {} ", applicationUser.getFullname());
+        log.info("user found is name : {} ", applicationUser.getFullName());
         return UserPrincipal.build(applicationUser);
     }
 
@@ -42,7 +42,7 @@ public class ApplicationUserService implements UserDetailsService {
         ApplicationUser newApplicationUser = ApplicationUser.builder()
             .firstName(applicationUser.getFirstName())
             .lastName(applicationUser.getLastName())
-            .fullname(applicationUser.getFirstName() + " " + applicationUser.getLastName())
+            .fullName(applicationUser.getFirstName() + " " + applicationUser.getLastName())
             .username(applicationUser.getUsername())
             .email(applicationUser.getEmail())
             .password(encryptedPassword)
@@ -57,7 +57,7 @@ public class ApplicationUserService implements UserDetailsService {
         
         foundApplicationUser.setFirstName(applicationUser.getFirstName());
         foundApplicationUser.setLastName(applicationUser.getLastName());
-        foundApplicationUser.setFullname(applicationUser.getFirstName() + " " + applicationUser.getLastName());
+        foundApplicationUser.setFullName(applicationUser.getFirstName() + " " + applicationUser.getLastName());
         foundApplicationUser.setUsername(applicationUser.getUsername());
         applicationUserRepository.save(foundApplicationUser);
 
