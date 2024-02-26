@@ -3,6 +3,8 @@ package com.tokoonline.demo.product;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,25 @@ public class ProductServiceTest {
         List<Product> actualResult = productService.fetchAll();
 
         Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void fetchById_shouldReturnProduct_whenGivenProductAlreadyById(){
+        UUID id = UUID.randomUUID();
+        Product product = Product.builder().id(id).name("Soklin").desctription("sabun pencuci pakaian").price(BigDecimal.valueOf(9500)).stock(BigInteger.valueOf(20)).build();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.of(product));
+
+        Product actualResult = productService.fetchById(id);
+
+        Assertions.assertEquals(product, actualResult);
+    }
+
+    @Test
+    void fetchById_shouldThrowErrorException_whenGivenProductIsNotFound(){
+        UUID id = UUID.randomUUID();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(ProductNotFoundException.class, () -> productService.fetchById(id));
     }
 
 }

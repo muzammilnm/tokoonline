@@ -1,6 +1,7 @@
 package com.tokoonline.demo.product;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,9 @@ public class ProductService {
 
     public List<Product> fetchAll(){
         return productRepostitory.findAll();
+    }
+
+    public Product fetchById(UUID id){
+        return productRepostitory.findById(id).orElseThrow(() -> new ProductNotFoundException());
     }
 }

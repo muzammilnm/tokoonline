@@ -37,7 +37,11 @@ public class Product {
     private BigInteger stock;
 
     public ProductResponseDto convertToDto(){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(this, ProductResponseDto.class);
+        return ProductResponseDto.builder()
+            .name(this.name)
+            .desctription(this.desctription)
+            .price(this.price)
+            .stock(this.stock)
+            .build();
     }
 }

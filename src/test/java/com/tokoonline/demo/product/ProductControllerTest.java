@@ -3,6 +3,7 @@ package com.tokoonline.demo.product;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -89,5 +90,29 @@ public class ProductControllerTest {
         List<ProductResponseDto> actualResult = objectMapper.readerForListOf(ProductResponseDto.class).readValue(responseString);
 
         Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void fetchById_shouldReturnCustomer_whenGivenCustomerIsNotEmpty() throws Exception{
+        Product product = Product.builder().name("Soklin").desctription("sabun pencuci pakaian").price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
+        Product productSaved = productRepostitory.save(product);
+        ProductResponseDto expectedResult = ProductResponseDto.builder().name("Soklin").desctription("sabun pencuci pakaian").price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}", productSaved.getId()))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        String responseString = result.getResponse().getContentAsString();
+
+        ProductResponseDto actualResult = objectMapper.readValue(responseString, ProductResponseDto.class);
+
+        Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void fetchById_shouldTrhowProductNotFoundException_whenGivenCustomerIsEmpty() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}", UUID.randomUUID()))
+            .andExpect(MockMvcResultMatchers.status().isNotFound())
+            .andReturn();
     }
 }
