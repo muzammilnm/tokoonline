@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import com.tokoonline.demo.product.model.dto.ProductResponseDto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -28,20 +29,20 @@ public class Product {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @Column
     private String name;
 
+    @Column
     private String desctription;
 
+    @Column
     private BigDecimal price;
 
+    @Column
     private BigInteger stock;
 
     public ProductResponseDto convertToDto(){
-        return ProductResponseDto.builder()
-            .name(this.name)
-            .desctription(this.desctription)
-            .price(this.price)
-            .stock(this.stock)
-            .build();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(this, ProductResponseDto.class);
     }
 }

@@ -69,4 +69,14 @@ public class ProductServiceTest {
         Assertions.assertThrows(ProductNotFoundException.class, () -> productService.fetchById(id));
     }
 
+    @Test
+    void add_shouldReturnNewProduct_whenProductsIsAdded(){
+        Product product = Product.builder().name("Soklin").desctription("sabun pencuci pakaian").price(BigDecimal.valueOf(9500)).stock(BigInteger.valueOf(20)).build();
+        Mockito.when(productRepostitory.save(product)).thenReturn(product);
+
+        Product actualResult = productService.add(product);
+
+        Assertions.assertEquals(product, actualResult);
+    }
+
 }

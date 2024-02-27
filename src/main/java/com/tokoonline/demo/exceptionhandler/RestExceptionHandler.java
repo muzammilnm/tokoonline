@@ -1,7 +1,9 @@
 package com.tokoonline.demo.exceptionhandler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springdoc.api.ErrorMessage;
 
@@ -33,9 +35,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {
-        ProductNotFoundException.class
-    })
+    @ExceptionHandler(value = 
+        ProductNotFoundException.class)
     public ResponseEntity<ErrorMessage> resourceNotFoundExceptionI(RuntimeException exception, WebRequest request){
         ErrorMessage message = new ErrorMessage(exception.getMessage());
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);

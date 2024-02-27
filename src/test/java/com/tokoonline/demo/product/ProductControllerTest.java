@@ -12,10 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tokoonline.demo.applicationuser.ApplicationUserRepository;
 import com.tokoonline.demo.applicationuser.model.ApplicationUser;
 import com.tokoonline.demo.product.model.Product;
+import com.tokoonline.demo.product.model.dto.ProductRequestDto;
 import com.tokoonline.demo.product.model.dto.ProductResponseDto;
 
 @SpringBootTest
@@ -97,7 +100,7 @@ public class ProductControllerTest {
     void fetchById_shouldReturnCustomer_whenGivenCustomerIsNotEmpty() throws Exception{
         Product product = Product.builder().name("Soklin").desctription("sabun pencuci pakaian").price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
         Product productSaved = productRepostitory.save(product);
-        ProductResponseDto expectedResult = ProductResponseDto.builder().name("Soklin").desctription("sabun pencuci pakaian").price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
+        ProductResponseDto expectedResult = ProductResponseDto.builder().id(productSaved.getId()).name("Soklin").desctription("sabun pencuci pakaian").price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}", productSaved.getId()))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn();
@@ -115,4 +118,44 @@ public class ProductControllerTest {
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andReturn();
     }
+
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void add_shouldAddNewProduct_whenGivenAddProduct()throws Exception{
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .name("Soklin")
+            .description("sabun pencuci pakaian")
+            .price(new BigDecimal("9500.00"))
+            .stock(BigInteger.valueOf(20))
+            .build();
+        String requestDtoString = objectMapper.writeValueAsString(requestDto);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/products")
+            .content(requestDtoString)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
+        MvcResult result  = mockMvc.perform(requestBuilder)
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn();
+        String responseString = result.getResponse().getContentAsString();
+
+        ProductResponseDto actualResult = objectMapper.readValue(responseString, ProductResponseDto.class);
+        Product product = productRepostitory.findById(actualResult.getId()).get();
+        ProductResponseDto expectedResult = product.convertToDto();
+        
+        Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    // @Test
+    // @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    // void add_shouldErrorResponse_whenGivenNameIsNull()throws Exception{
+    //     ProductRequestDto requestDto = ProductRequestDto.builder().price(new BigDecimal("9500.00")).stock(BigInteger.valueOf(20)).build();
+    //     String requestDtoString = objectMapper.writeValueAsString(requestDto);
+    //     mockMvc.perform(MockMvcRequestBuilders.post("/products")
+    //         .content(requestDtoString)
+    //         .contentType(MediaType.APPLICATION_JSON)
+    //         ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+    //         .andExpect(MockMvcResultMatchers.jsonPath("$.name", Is.is("Name can not be null")))
+    //         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    // }
+
 }

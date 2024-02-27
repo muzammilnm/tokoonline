@@ -2,6 +2,7 @@ package com.tokoonline.demo.product.model.dto;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponseDto {
+    private UUID id;
     private String name;
 
     private String desctription;

@@ -22,4 +22,15 @@ public class ProductService {
     public Product fetchById(UUID id){
         return productRepostitory.findById(id).orElseThrow(() -> new ProductNotFoundException());
     }
+
+    public Product add(Product product){
+        Product newProduct = Product.builder() 
+            .name(product.getName())
+            .desctription(product.getDesctription())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .build();
+
+        return productRepostitory.save(newProduct);
+    }
 }
