@@ -211,4 +211,24 @@ public class ProductControllerTest {
             .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void deleteById_shouldReturnTrue_whenDeleteProductIsSuccess() throws Exception{
+        Product product = Product.builder()
+            .name("Deterjen")
+            .desctription("sabun pakaian")
+            .price(new BigDecimal("9500.00"))
+            .stock(BigInteger.valueOf(20)).build();
+        Product productSaved = productRepostitory.save(product);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}", productSaved.getId()))
+            .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void deleteById_shouldErrorResponse_whenDeleteProductIsNotFound() throws Exception{
+        UUID id = UUID.randomUUID();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}", id))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }

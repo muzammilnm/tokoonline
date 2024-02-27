@@ -43,4 +43,10 @@ public class ProductService {
         foundProduct.setStock(product.getStock());
         return productRepostitory.save(foundProduct);
     }
+
+    public Boolean deleteById(UUID id){
+        productRepostitory.findById(id).orElseThrow(() -> new ProductNotFoundException());
+        productRepostitory.deleteById(id);
+        return true;
+    }
 }

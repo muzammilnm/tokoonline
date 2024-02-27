@@ -1,5 +1,7 @@
 package com.tokoonline.demo.product;
 
+import static org.mockito.Mockito.times;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -99,6 +101,27 @@ public class ProductServiceTest {
         Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ProductNotFoundException.class, () -> productService.update(product));
+    }
+
+    @Test
+    void delete_shouldReturnTrue_whenDeleteProductIsSuccess(){
+        UUID id = UUID.randomUUID();
+        Product product = Product.builder().id(id).name("Daia").desctription("sabun pakaian").price(BigDecimal.valueOf(8500)).stock(BigInteger.valueOf(10)).build();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.of(product));
+        
+        Boolean actualResult = productService.deleteById(id);
+
+        Mockito.verify(productRepostitory,times(1)).deleteById(id);
+        Assertions.assertEquals(true, actualResult);
+    }
+
+    @Test
+    void delete_shouldThrowProductNotFoundExeption_whenProductIsNotFound(){
+        UUID id = UUID.randomUUID();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.empty());
+
+        Mockito.verify(productRepostitory,times(0)).deleteById(id);
+        Assertions.assertThrows(ProductNotFoundException.class, () -> productService.deleteById(id));
     }
 
 }
