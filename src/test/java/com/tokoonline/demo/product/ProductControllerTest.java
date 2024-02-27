@@ -158,4 +158,57 @@ public class ProductControllerTest {
     //         .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     // }
 
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void update_shouldReturnUpdateProduct_whenGivenUpdateProductIsSuccess() throws Exception{
+        UUID id = UUID.randomUUID();
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .name("Soklin")
+            .description("Sabun pencuci pakaian")
+            .price(new BigDecimal("9000.00"))
+            .stock(BigInteger.valueOf(20))
+            .build();
+        Product product = Product.builder()
+            .id(id)
+            .name("Deterjen")
+            .desctription("sabun pakaian")
+            .price(new BigDecimal("9500.00"))
+            .stock(BigInteger.valueOf(20)).build();
+        Product productSaved = productRepostitory.save(product);
+        String requestDtoString = objectMapper.writeValueAsString(requestDto);
+        RequestBuilder builder = MockMvcRequestBuilders.put("/products/{id}", productSaved.getId())
+            .content(requestDtoString)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(builder)
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn();
+        String responseString = result.getResponse().getContentAsString();
+
+        ProductResponseDto actualResult = objectMapper.readValue(responseString, ProductResponseDto.class);
+        Product foundProduct = productRepostitory.findById(actualResult.getId()).get();
+        ProductResponseDto expectedResult = foundProduct.convertToDto();
+
+        Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    @WithUserDetails(setupBefore = TestExecutionEvent.TEST_EXECUTION, value = "johndoe@gmail.com")
+    void update_shouldThrowProductNotFoundException_whenGivenUpdateProductIsNotFound() throws Exception{
+        UUID id = UUID.randomUUID();
+        ProductRequestDto requestDto = ProductRequestDto.builder()
+            .name("Soklin")
+            .description("Sabun pencuci pakaian")
+            .price(new BigDecimal("9000.00"))
+            .stock(BigInteger.valueOf(20))
+            .build();
+        String requestDtoString = objectMapper.writeValueAsString(requestDto);
+        RequestBuilder builder = MockMvcRequestBuilders.put("/products/{id}", id)
+            .content(requestDtoString)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
+        mockMvc.perform(builder)
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 }

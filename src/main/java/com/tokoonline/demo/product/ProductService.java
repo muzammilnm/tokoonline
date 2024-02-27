@@ -33,4 +33,14 @@ public class ProductService {
 
         return productRepostitory.save(newProduct);
     }
+
+    public Product update(Product product){
+        Product foundProduct = productRepostitory.findById(product.getId()).orElseThrow(() -> new ProductNotFoundException());
+
+        foundProduct.setName(product.getName());
+        foundProduct.setDesctription(product.getDesctription());
+        foundProduct.setPrice(product.getPrice());
+        foundProduct.setStock(product.getStock());
+        return productRepostitory.save(foundProduct);
+    }
 }

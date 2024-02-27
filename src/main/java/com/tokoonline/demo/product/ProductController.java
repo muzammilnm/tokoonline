@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tokoonline.demo.product.model.Product;
@@ -47,6 +48,21 @@ public class ProductController {
         Product productSaved = productService.add(convertToProduct);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productSaved.convertToDto());
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ProductResponseDto> update(@RequestBody ProductRequestDto productRequestDto, @PathVariable UUID id){
+        Product convertToProduct = productRequestDto.convertToEntity();
+        Product product = Product.builder()
+            .id(id)
+            .name(convertToProduct.getName())
+            .desctription(convertToProduct.getDesctription())
+            .price(convertToProduct.getPrice())
+            .stock(convertToProduct.getStock())
+            .build();
+        Product updateProduct = productService.update(product);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateProduct.convertToDto());
     }
 
 }

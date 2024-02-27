@@ -79,4 +79,26 @@ public class ProductServiceTest {
         Assertions.assertEquals(product, actualResult);
     }
 
+    @Test
+    void update_shouldReturnProductUpdate_whenUpdateProductIsSuccess(){
+        UUID id = UUID.randomUUID();
+        Product product = Product.builder().id(id).name("Daia").desctription("sabun pakaian").price(BigDecimal.valueOf(8500)).stock(BigInteger.valueOf(10)).build();
+        Product expectedResult = Product.builder().id(id).name("Soklin").desctription("sabun pencuci pakaian").price(BigDecimal.valueOf(9500)).stock(BigInteger.valueOf(20)).build();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.of(product));
+        Mockito.when(productRepostitory.save(product)).thenReturn(expectedResult);
+
+        Product actualResult = productService.update(product);
+
+        Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test 
+    void update_shouldThrowProductNotFoundException_whenProductIsNotFound() throws Exception{
+        UUID id = UUID.randomUUID();
+        Product product = Product.builder().id(id).name("Daia").desctription("sabun pakaian").price(BigDecimal.valueOf(8500)).stock(BigInteger.valueOf(10)).build();
+        Mockito.when(productRepostitory.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(ProductNotFoundException.class, () -> productService.update(product));
+    }
+
 }
