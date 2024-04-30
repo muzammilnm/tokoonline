@@ -1,5 +1,3 @@
-# Endpoint Documentation
-
 ## Application User
 
 Endpoints for user modification
