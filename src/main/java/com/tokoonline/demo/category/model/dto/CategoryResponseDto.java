@@ -1,6 +1,5 @@
-package com.tokoonline.demo.product.model.dto;
+package com.tokoonline.demo.category.model.dto;
 
-import java.math.BigInteger;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -12,13 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponseDto {
+public class CategoryResponseDto {
     private UUID id;
+
     private String name;
 
     private String description;
-
-    private Double price;
-
-    private BigInteger stock;
 }

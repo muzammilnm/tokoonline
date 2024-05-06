@@ -3,6 +3,11 @@
 ## GET List Product API
 Endpoint : GET /products
 
+Params :
+- name (optional)
+- price (optional)
+- categoryIds (optional)
+
 Response Body Success :
 ```json
 {
@@ -12,11 +17,15 @@ Response Body Success :
         [
             {
                 "id": "001",
-                "name": "Buku tulis"
+                "name": "Buku tulis",
+                "description": "buku tulis cetak",
+                "price": 50000
             },
             {
                 "id": "002",
-                "name": "Buku panduan"
+                "name": "Buku panduan",
+                "description": "buku panduan cetak",
+                "price": 45000
             },
         ]
     },
@@ -24,7 +33,8 @@ Response Body Success :
         "size": 10,
         "total": 100,
         "totalPage": 10,
-        "current": 2
+        "current": 2,
+
     }
 }
 ```
@@ -45,9 +55,6 @@ Response Body Error :
 ## GET Product API
 Endpoint : GET /products/{id}
 
-Params :
-- id : "001"
-
 Response Body Success :
 ```json
 {
@@ -56,6 +63,7 @@ Response Body Success :
     "data": {
         "id": "001",
         "name": "Buku panduan",
+        "description": "buku panduan cetak",
         "stock": 20,
         "price": 200000
 
@@ -90,7 +98,7 @@ Request Body :
     "description": "Introducing the XYZ Mobile X10: a powerful and stylish smartphone designed for the modern user. With its octa-core processor, advanced triple-camera system, vibrant AMOLED display, and long-lasting battery life, the X10 delivers an exceptional mobile experience. Stay connected, capture stunning photos, and enjoy entertainment on the go with the XYZ Mobile X10",
     "price": 2000000,
     "stock": 5,
-    "categoryId": 5
+    "categoryIds": ["ae91837d-2121-47ce-ab22-36aa38fbb06b"]
 }
 ```
 
@@ -130,7 +138,7 @@ Request Body :
     "description": "Introducing the XYZ Mobile X10: a powerful and stylish smartphone designed for the modern user. With its octa-core processor, advanced triple-camera system, vibrant AMOLED display, and long-lasting battery life, the X10 delivers an exceptional mobile experience. Stay connected, capture stunning photos, and enjoy entertainment on the go with the XYZ Mobile X10",
     "price": 2500000,
     "stock": 18,
-    "categoryId": 5
+    "categoryIds": ["ae91837d-2121-47ce-ab22-36aa38fbb06b"]
 }
 ```
 

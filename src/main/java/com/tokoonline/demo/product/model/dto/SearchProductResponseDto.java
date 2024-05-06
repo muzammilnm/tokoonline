@@ -12,13 +12,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponseDto {
+public class SearchProductResponseDto {
     private UUID id;
+
     private String name;
 
     private String description;
 
     private Double price;
-
-    private BigInteger stock;
 }
